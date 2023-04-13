@@ -13,6 +13,7 @@
 #include<QMenu>
 #include<QAction>
 #include<QMenuBar>
+#include<QFileDialog>
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -41,8 +42,11 @@ private:
     ReturnLast *returnlast;
     QMenuBar *menubar;
     QMenu *pmenu;
+    QMenu *pmenu2;
     QAction *paction;
     QAction *paction2;
+    QAction *paction3;
+    QAction *paction4;
 private:
     bool eventFilter(QObject *obj, QEvent *event) override;
 private slots:
@@ -54,6 +58,8 @@ private slots:
     void paintEvent(QPaintEvent *event) override;
     void clearImage();
     void updateimage(QPixmap);
+    void saveimage();
+    void loadimage();
 
 };
 

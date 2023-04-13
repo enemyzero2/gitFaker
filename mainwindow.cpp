@@ -29,11 +29,17 @@ MainWindow::MainWindow(QWidget *parent)
     //caidanlan
     menubar =new QMenuBar(this);
     pmenu= new QMenu("工具(&t)",this);
+    pmenu2=new QMenu("开始(&k)",this);
     paction=new QAction("undo(&z)",this);
     paction2=new QAction("redo(&x)",this);
+    paction3=new QAction("导入",this);
+    paction4=new QAction("导出",this);
     pmenu->addAction(paction);
     pmenu->addAction(paction2);
+    pmenu2->addAction(paction3);
+    pmenu2->addAction(paction4);
     menubar->addMenu(pmenu);
+    menubar->addMenu(pmenu2);
     setMenuBar(menubar);
 
 
@@ -75,6 +81,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(paction,SIGNAL(triggered()),returnlast,SLOT(undo()));
     connect(paction2,SIGNAL(triggered()),returnlast,SLOT(undo()));
     connect(returnlast,SIGNAL(imageChanged(QPixmap)),this,SLOT(updateimage(QPixmap)));
+    connect(paction3,SIGNAL(triggered()),this,SLOT(loadimage()));
+    connect(paction4,SIGNAL(triggered()),this,SLOT(saveimage()));
 
 }
 
@@ -127,6 +135,29 @@ void MainWindow::updateimage(QPixmap a){
     QImage newimage=a.toImage();
     m_image=newimage.copy();
     update();
+}
+void MainWindow::loadimage(){
+    QString filePath = QFileDialog::getOpenFileName(this,tr("Open Image"), ".",tr("Image Files(*.jpg *.png *.bmp)"));
+    if (!filePath.isEmpty())
+    {
+        QImage image;
+        if (image.load(filePath))
+        {
+            m_image = image.scaled(1920, 1080, Qt::KeepAspectRatio);
+            update();
+            returnlast->savePixmap(&m_image);
+        }
+}}
+void MainWindow::saveimage(){
+    QString filePath = QFileDialog::getSaveFileName(this, tr("Save Image"), ".", tr("Image Files(*.jpg)"));
+    if (!filePath.isEmpty())
+    {
+        if (m_image.save(filePath))
+        {
+            qDebug() <<"loading complete!";
+            QMessageBox::information(this, tr("Save Image"), tr("Image saved successfully!"));
+        }
+    }
 }
 bool MainWindow::eventFilter(QObject* obj, QEvent *event)
 {
